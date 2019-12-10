@@ -3,9 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <io.h>
-int refactor(char* line, char *out)
+void refactor(char* line, char *out)
 {
-	int changed = 0;
 	int i = 0, j = 0;
 	int f = 0, i1 = 0, l = 0, no = 0;
 	char c = line[0];
@@ -36,39 +35,17 @@ int refactor(char* line, char *out)
 		}		
 		if (c == 'e' && l && (line[i + 1] == ' ' || line[i + 1] == '.' || line[i + 1] == '\r' || line[i + 1] == '\n' || line[i + 1] == EOF))
 		{
-			out[j++] = '#';
+			out[j++] = 'E';
+			out[j++] = 'L';
+			out[j++] = 'I';
+			out[j++] = 'F';
 			i++;
 			c = line[i];
-			changed++;
+
 		}
 		else
 		{
 			no = f + i1 + l;
-			/*
-			if (l)
-			{
-
-				out[j++] = line[i - 3];
-				out[j++] = line[i - 2];
-				out[j++] = line[i - 1];
-			}
-			else
-			if (i1)
-			{ 
-				out[j++] = line[i - 2];
-				out[j++] = line[i - 1];
-			}
-			else
-			if (f)
-				out[j++] = line[i - 1];
-			else
-			{
-				out[j++] = c;
-				i++;
-				c = line[i];
-			}
-			*/
-
 			j += no;
 			if (l)
 			{
@@ -93,45 +70,10 @@ int refactor(char* line, char *out)
 		}
 		
 	}
-
-	if (c == '\n')
-		out[j++] = '\n';
-
 	out[j] = 0;
 
-	return changed;
+
 }
-
-
-
-int main_ok()
-{
-	char str[4096];
-	char strOut[4096];
-	FILE* file;
-	file = fopen("input.txt", "r+");
-	int changed = 0;
-	int posr = 0, posw = 0;
-	while (!feof(file))
-	{
-		fseek(file, posr, SEEK_SET);
-		if (!fgets(str, sizeof(str), file))
-			break;
-		posr = ftell(file);
-
-		changed += refactor(str, strOut);
-
-		fseek(file, posw, SEEK_SET);
-		fputs(strOut, file);
-		posw = ftell(file);
-		fflush(file);
-	}
-	_chsize(_fileno(file), posr - 3 * changed);
-	fclose(file);
-	return 0;
-}
-
-
 
 int main()
 {
@@ -145,11 +87,10 @@ int main()
 	{
 		fgets(str, sizeof(str), fileInput);
 		refactor(str, strOut);
-		fputs(strOut, fileOut);
+		puts(strOut);
 	}
 	fclose(fileInput);
 	fclose(fileOut);
-	//_unlink("input.txt");
-	//rename("input_temp.txt", "input.txt");
+
 	return 0;
 }
